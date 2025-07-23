@@ -1,6 +1,37 @@
+```Works in endless progress```
+
 # Game Prototypes and CI/CD Workflows
 
-This repository contains several Unity game prototypes and an automated build workflow using GitHub Actions. Below you will find highlights of the projects and screenshots of the build pipelines.
+This repository contains several examples of my Unity game prototypes and an automated build workflow using GitHub Actions. Below you will find highlights of the projects and screenshots of the build pipelines.
+
+---
+
+## Continuous Integration / Deployment Workflow
+
+My GitHub Action workflow to automatically build and deploy the game to multiple platforms. Below are screenshots of a successful build and deployment pipeline.
+
+### WebGL Build & Upload to Itch.io
+![Build for WebGL](screenshots/Build_for_WebGL.PNG)
+
+- Automatically builds the WebGL target using Unity
+- Pushes build to Itch.io using Butler CLI
+- Shows patch size and upload status in logs
+
+### Windows and WebGL Parallel Builds
+![Win64_WebGL_Basic](screenshots/Win64_WebGL_Basic.PNG)
+
+- `Win64_WebGL_Basic.yml` handles both WebGL and Windows builds
+- Runs on pull requests to ensure builds are always green
+- Total build times shown for quick reference
+
+---
+
+**Technologies Used:**
+- Unity (C#)
+- GitHub Actions for CI/CD
+- Butler for Itch.io deployment
+
+If you are reviewing this as part of a recruitment process, feel free to explore the workflow files (`.github/workflows/*.yml`) to see how multi-platform automation is configured.
 
 ---
 
@@ -37,30 +68,5 @@ This repository contains several Unity game prototypes and an automated build wo
 
 ---
 
-## Continuous Integration / Deployment Workflow
 
-The project uses GitHub Actions to automatically build and deploy the game to multiple platforms. Below are screenshots of a successful build and deployment pipeline.
-
-### WebGL Build & Upload to Itch.io
-![Build for WebGL](Build_for_WebGL.PNG)
-
-- Automatically builds the WebGL target using Unity
-- Pushes build to Itch.io using Butler CLI
-- Shows patch size and upload status in logs
-
-### Windows and WebGL Parallel Builds
-![Win64_WebGL_Basic](Win64_WebGL_Basic.PNG)
-
-- `Win64_WebGL_Basic.yml` handles both WebGL and Windows builds
-- Runs on pull requests to ensure builds are always green
-- Total build times shown for quick reference
-
----
-
-**Technologies Used:**
-- Unity (C#)
-- GitHub Actions for CI/CD
-- Butler for Itch.io deployment
-
-If you are reviewing this as part of a recruitment process, feel free to explore the workflow files (`.github/workflows/*.yml`) to see how multi-platform automation is configured.
 
