@@ -1,4 +1,3 @@
-# .github/ISSUE_TEMPLATE/weekly-task.md
 name: Weekly Task
 about: Template for weekly milestone tasks with user story + acceptance criteria
 title: "[Week X] "
