@@ -1,9 +1,7 @@
 ---
 name: Weekly Task
 about: Template for weekly milestone tasks with user story + acceptance criteria
-title: "[Week X] "
-labels: enhancement
-assignees: ""
+assignees: "mikosz08"
 ---
 
 ## User Story
