@@ -31,7 +31,7 @@ My GitHub Action workflow to automatically build and deploy the game to multiple
 - GitHub Actions for CI/CD
 - Butler for Itch.io deployment
 
-If you are reviewing this as part of a recruitment process, feel free to explore the workflow files (`.github/workflows/*.yml`) to see how multi-platform automation is configured.
+Feel free to explore the workflow files (`.github/workflows/*.yml`) to see how multi-platform automation is configured.
 
 ---
 
