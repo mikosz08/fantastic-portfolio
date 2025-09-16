@@ -23,9 +23,11 @@ docker build -t gameops/app:dev -f ops/Dockerfile .
 # run (maps port 8080)
 docker run --rm -p 8080:8080 -e ASPNETCORE_URLS=http://+:8080 gameops/app:dev
 
+```bash
 src/App/          # ASP.NET Core API project
 tests/            # test projects (to be added)
 .github/workflows # CI pipelines
 ops/              # Dockerfile, scripts (upcoming)
 infra/ deploy/    # IaC / deployment (later milestones)
 docs/             # design notes
+```
