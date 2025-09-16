@@ -16,7 +16,7 @@ jobs:
       - name: Setup .NET 9 (from global.json)
         uses: actions/setup-dotnet@v4
         with:
-          global-json-file: global.json
+          global-json-file: GameOps/global.json
           cache: true
 
       - name: Restore
