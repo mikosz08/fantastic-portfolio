@@ -2,7 +2,7 @@
 
 > Minimal API scaffold for **Milestone M0**.
 
-[![CI](https://img.shields.io/github/actions/workflow/status/<org>/<repo>/game_ops_ci.yml?branch=main)](../../actions)
+[![CI](https://img.shields.io/github/actions/workflow/status/mikosz08/fantastic-portfolio/game_ops_ci.yml?branch=main)](../../actions)
 
 ---
 
