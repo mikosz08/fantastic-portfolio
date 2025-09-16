@@ -2,7 +2,7 @@
 
 > Short description: **PLACEHOLDER** — minimal API scaffold for M0.
 
-[![CI](https://img.shields.io/github/actions/workflow/status/<org>/<repo>/ci.yml?branch=main)](../../actions)
+[![CI](https://img.shields.io/github/actions/workflow/status/<org>/<repo>/game_ops_ci.yml?branch=main)](../../actions)
 
 ## Quickstart
 
