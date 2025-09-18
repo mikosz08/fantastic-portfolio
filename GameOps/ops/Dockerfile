@@ -4,8 +4,8 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
 # copy solution + project for restore-layer caching
-COPY ../GameOps.sln ./
-COPY ../src/App/App.csproj src/App/
+COPY GameOps.sln ./
+COPY src/App/App.csproj src/App/
 
 RUN dotnet restore src/App/App.csproj
 
