@@ -5,8 +5,7 @@ on:
     paths:
       - "src/**"
       - "ops/Dockerfile"
-      - "compose.yaml"
-      - "docker-compose.yml"
+      - "ops/docker-compose.yml"
       - "global.json"
 jobs:
   build:
