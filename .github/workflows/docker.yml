@@ -1,11 +1,11 @@
 name: Docker Build (PR)
+
 on:
   pull_request:
     branches: [ main ]
     paths:
-      - "src/**"
-      - "ops/Dockerfile"
-      - "ops/docker-compose.yml"
+      - "GameOps/src/**"
+      - "GameOps/ops/**"
       - "global.json"
 jobs:
   build:
