@@ -15,11 +15,14 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s          
-    restart: unless-stopped      
+    restart: unless-stopped
+    ports:
+      - "5432:5432"       
   
   # Adminer
   pgweb:
     image: sosedoff/pgweb
+    container_name: Adminer
     ports: ["8081:8081"]
     command: ["--url", "postgres://app:app@db:5432/gameops?sslmode=disable"]
     depends_on:

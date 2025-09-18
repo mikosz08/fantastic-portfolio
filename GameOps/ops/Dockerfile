@@ -15,4 +15,8 @@ RUN dotnet publish src/App/App.csproj -c Release -o /out -p:UseAppHost=false --n
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 WORKDIR /app
 COPY --from=build /out ./
+
+HEALTHCHECK --interval=10s --timeout=3s --start-period=10s --retries=3 \
+  CMD curl -fsS http://localhost:8080/readyz || exit 1
+
 ENTRYPOINT ["dotnet", "App.dll"]
