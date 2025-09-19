@@ -41,7 +41,7 @@ jobs:
             -o artifacts/migrations.sql
 
       - name: Sanity check SQL not empty
-        run: test -s artifacts/migrations.sql
+        run: test -s GameOps/artifacts/migrations.sql
 
       - name: Upload migration script (artifact)
         uses: actions/upload-artifact@v4
