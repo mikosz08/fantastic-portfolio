@@ -1,4 +1,4 @@
-name: Docker Build
+name: Docker
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ on:
       - "global.json"
 jobs:
   build:
-    name: Docker Build 🐳
+    name: Build 🐳
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

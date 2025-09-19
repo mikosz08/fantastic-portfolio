@@ -1,4 +1,4 @@
-name: CI Build
+name: CI
 
 on:
   pull_request:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: CI Build 🎮
+    name: Build 🎮
     runs-on: ubuntu-latest
 
     defaults:
