@@ -31,6 +31,7 @@ jobs:
         run: dotnet tool restore --tool-manifest GameOps/.config/dotnet-tools.json
 
       - name: Generate idempotent migration script
+        working-directory: GameOps
         run: |
           mkdir -p artifacts
           dotnet ef migrations script \
@@ -46,4 +47,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: migrations-sql
-          path: artifacts/migrations.sql
+          path: GameOps/artifacts/migrations.sql
