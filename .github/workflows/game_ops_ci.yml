@@ -26,9 +26,9 @@ jobs:
       - name: Build (Release)
         run: dotnet build --configuration Release --no-restore
         working-directory: GameOps
-        
+
       - name: Restore dotnet tools (EF CLI)
-        run: dotnet tool restore
+        run: dotnet tool restore --tool-manifest GameOps/.config/dotnet-tools.json
 
       - name: Generate idempotent migration script
         run: |
