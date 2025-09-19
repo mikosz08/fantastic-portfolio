@@ -3,15 +3,14 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Prefer env var: ConnectionStrings__Default (Compose), fallback to appsettings
-var cs =
+var connectionString =
     builder.Configuration["ConnectionStrings:Default"] ??
     builder.Configuration["ConnectionStrings__Default"] ??
-    "Host=localhost;Username=app;Password=app;Database=gameops"; // dev fallback
+    "Host=localhost;Username=app;Password=app;Database=gameops";
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseNpgsql(cs, npgsql =>
+    options.UseNpgsql(connectionString, npgsql =>
     {
         // keep migrations in the App assembly
         npgsql.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName);
@@ -25,7 +24,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// DEV-only: apply pending migrations on start (handy for local runs)
+// DEV
 if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
@@ -36,7 +35,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// simple readiness check (will be enhanced later)
 app.MapGet("/readyz", () => Results.Ok(new { status = "ok" }));
 
 app.Run();
