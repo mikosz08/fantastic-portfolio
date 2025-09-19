@@ -51,6 +51,13 @@ GameOps/
 
 * Branching: trunk-based (`main` always deployable). Short-lived branches like `chore/m0-1-init-repo`.
 
+## Database & Migrations
+```bash
+docker compose up -d db
+dotnet ef migrations add Init --project src/App --startup-project src/App
+dotnet ef database update --project src/App --startup-project src/App
+```
+
 ## Evidence Index
 
 Audit trail of artifacts and decisions. Add links as work progresses.

@@ -1,14 +1,15 @@
-name: Docker Build (PR)
+name: Docker
+
 on:
   pull_request:
     branches: [ main ]
     paths:
-      - "src/**"
-      - "ops/Dockerfile"
-      - "ops/docker-compose.yml"
+      - "GameOps/src/**"
+      - "GameOps/ops/**"
       - "global.json"
 jobs:
   build:
+    name: Build 🐳
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,8 +17,8 @@ jobs:
       - name: Build image
         uses: docker/build-push-action@v6
         with:
-          context: .
-          file: ops/Dockerfile
+          context: ./GameOps
+          file: ./GameOps/ops/Dockerfile
           push: false
           tags: gameops/app:ci
           cache-from: type=gha
