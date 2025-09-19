@@ -26,3 +26,24 @@ jobs:
       - name: Build (Release)
         run: dotnet build --configuration Release --no-restore
         working-directory: GameOps
+        
+      - name: Restore dotnet tools (EF CLI)
+        run: dotnet tool restore
+
+      - name: Generate idempotent migration script
+        run: |
+          mkdir -p artifacts
+          dotnet ef migrations script \
+            --idempotent \
+            --project src/App \
+            --startup-project src/App \
+            -o artifacts/migrations.sql
+
+      - name: Sanity check SQL not empty
+        run: test -s artifacts/migrations.sql
+
+      - name: Upload migration script (artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: migrations-sql
+          path: artifacts/migrations.sql
