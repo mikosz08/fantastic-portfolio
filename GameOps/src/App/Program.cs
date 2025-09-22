@@ -26,7 +26,7 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // DEV
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() && !app.Environment.IsEnvironment("Testing"))
 {
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
