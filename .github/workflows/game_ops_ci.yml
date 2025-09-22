@@ -55,7 +55,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: migrations-sql
-          path: artifacts/migrations.sql
+          path: GameOps/artifacts/migrations.sql
+          if-no-files-found: error
 
   test:
     name: Tests 🧪 + coverage
