@@ -84,9 +84,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage
-          path: TestResults/**/coverage.cobertura.xml
+          path: GameOps/TestResults/**/coverage.cobertura.xml
+          if-no-files-found: error
 
-      - name: Debug coverage paths
+      - name: Find coverage paths
         run: |
           echo "Searching for cobertura files..."
           find . -type f -name "coverage.cobertura.xml" -print
