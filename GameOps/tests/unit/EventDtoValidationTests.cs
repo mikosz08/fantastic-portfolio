@@ -68,13 +68,13 @@ public class EventDtoValidationTests : IClassFixture<TestingWebAppFactory>
     public async Task PostEvents_ValidRequest_Returns202AndEchoesRequest()
     {
         var body = new
-        {
-            type = "item_collected",
-            occurredAt = DateTimeOffset.Parse("2025-09-15T12:34:56Z"),
-            playerId = "p-001",
-            sessionId = "s-abc",
-            payload = new { itemId = 42, rarity = "epic" }
-        };
+            {
+                type = "item_collected",
+                occurredAt = DateTimeOffset.Parse("2025-09-15T12:34:56Z"),
+                playerId = "p-001",
+                sessionId = "s-abc",
+                payload = new { itemId = 42, rarity = "epic" }
+            };
 
         var req = PostJson("/events", body);
         req.Headers.Add("Idempotency-Key", "k-123");
