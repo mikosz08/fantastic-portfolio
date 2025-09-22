@@ -1,4 +1,5 @@
 using App.Data;
+using App.Endpoints;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,7 +26,7 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // DEV
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() && !app.Environment.IsEnvironment("Testing"))
 {
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -35,6 +36,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.MapEvents();
+
 app.MapGet("/readyz", () => Results.Ok(new { status = "ok" }));
 
 app.Run();
+
+public partial class Program { }
