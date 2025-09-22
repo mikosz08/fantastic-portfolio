@@ -1,4 +1,5 @@
 using App.Data;
+using App.Endpoints;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,6 +36,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.MapEvents();
+
 app.MapGet("/readyz", () => Results.Ok(new { status = "ok" }));
 
 app.Run();
+
+public partial class Program { }
