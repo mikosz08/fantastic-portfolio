@@ -9,7 +9,7 @@ public static class EventsEndpoints
     public static IEndpointRouteBuilder MapEvents(this IEndpointRouteBuilder routes)
     {
         var group = routes.MapGroup("/events")
-                          .WithTags("Events");
+                          .WithTags("Events").WithOpenApi();
 
         group.MapPost("", (HttpRequest req, EventCreateDto dto) =>
         {
@@ -18,9 +18,9 @@ public static class EventsEndpoints
 
             var errors = new Dictionary<string, string[]>();
             if (string.IsNullOrWhiteSpace(dto.Type))
-                errors[nameof(dto.Type)] = new[] { "Type is required." };
+                errors[nameof(dto.Type)] = ["Type is required."];
             if (dto.OccurredAt == default)
-                errors[nameof(dto.OccurredAt)] = new[] { "OccurredAt must be a valid timestamp." };
+                errors[nameof(dto.OccurredAt)] = ["OccurredAt must be a valid timestamp."];
 
             if (errors.Count > 0)
                 return ProblemFactory.BadRequest("Validation failed", errors);
@@ -32,8 +32,7 @@ public static class EventsEndpoints
             );
         })
         .WithName("PostEvents")
-        .ProducesValidationProblem()
-        .WithOpenApi(); // optional
+        .ProducesValidationProblem().Produces(StatusCodes.Status202Accepted);
 
         return routes;
     }
