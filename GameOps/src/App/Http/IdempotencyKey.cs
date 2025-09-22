@@ -1,4 +1,3 @@
-// src/App/Http/IdempotencyKey.cs
 using Microsoft.Extensions.Primitives;
 
 namespace App.Http;
