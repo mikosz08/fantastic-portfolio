@@ -78,10 +78,15 @@ jobs:
         run: dotnet restore
 
       - name: Test (with coverage)
-        run: dotnet test --configuration Release --collect "XPlat Code Coverage" --nologo -v minimal
+        run: dotnet test --configuration Release --collect "XPlat Code Coverage" --results-directory ./TestResults
 
       - name: Publish coverage
         uses: actions/upload-artifact@v4
         with:
           name: coverage
-          path: '**/TestResults/**/*coverage.cobertura.xml'
+          path: TestResults/**/coverage.cobertura.xml
+
+      - name: Debug coverage paths
+        run: |
+          echo "Searching for cobertura files..."
+          find . -type f -name "coverage.cobertura.xml" -print
