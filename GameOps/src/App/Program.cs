@@ -22,7 +22,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+    
 var app = builder.Build();
 
 // DEV
@@ -30,7 +30,18 @@ if (app.Environment.IsDevelopment() && !app.Environment.IsEnvironment("Testing")
 {
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+
+    try
+    {
+        logger.LogWarning("\u001b[33mDatabase Migrations starting...\u001b[33m");
+        db.Database.Migrate();
+        logger.LogWarning("\u001b[33mDatabase Migrations completed successfully.\u001b[33m");
+    }
+    catch (Exception ex)
+    {
+        logger.LogWarning("\u001b[33mDatabase connection unavailable; migrations skipped. Reason: \u001b[33m{Reason}[0m", ex.Message);
+    }
 
     app.UseSwagger();
     app.UseSwaggerUI();
