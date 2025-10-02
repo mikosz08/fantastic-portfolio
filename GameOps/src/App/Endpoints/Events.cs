@@ -28,7 +28,7 @@ public static class EventsEndpoints
                 errors[nameof(dto.OccurredAt)] = ["OccurredAt must be a valid timestamp."];
 
             if (errors.Count > 0)
-                return ProblemFactory.BadRequest(nameof(EventsEndpoints), "Validation failed", errors);
+                return ProblemFactory.BadRequest400(nameof(EventsEndpoints), "Validation failed", errors);
 
             return Results.Accepted(value: new { request = dto, idempotencyKey = idempotencyKey.Value });
         })

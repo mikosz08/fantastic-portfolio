@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 public static class ProblemFactory
 {
-    public static IResult BadRequest(string source, string title, IDictionary<string, string[]>? errors = null)
+    public static IResult BadRequest400(string source, string title, IDictionary<string, string[]>? errors = null)
     {
         var pd = new ValidationProblemDetails(errors ?? new Dictionary<string, string[]>())
         {

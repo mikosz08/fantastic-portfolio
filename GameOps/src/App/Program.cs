@@ -43,7 +43,7 @@ if (app.Environment.IsDevelopment() && !app.Environment.IsEnvironment("Testing")
     }
     catch (Exception ex)
     {
-        app.Logger.LogWarning("\u001b[33mDatabase connection unavailable; migrations skipped. Reason: \u001b[33m{Reason}[0m", ex.Message);
+        app.Logger.LogWarning("\u001b[33mDatabase connection unavailable; migrations skipped. Reason: {Reason}\u001b[33m", ex.Message);
     }
 
     app.UseSwagger();
