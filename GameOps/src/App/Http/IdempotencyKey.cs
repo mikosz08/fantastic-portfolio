@@ -6,18 +6,18 @@ public readonly record struct IdempotencyKey(string Value)
 {
     public static ValueTask<IdempotencyKey> BindAsync(HttpContext httpContext, ParameterInfo parameterInfo)
     {
-        if (httpContext.Items.TryGetValue(IdempotencyKeyFilter.HttpItemsKey, out var itemValue)
-            && itemValue is string fromItems
-            && !string.IsNullOrWhiteSpace(fromItems))
+        if (httpContext.Items.TryGetValue(IdempotencyKeyFilter.HttpItemsKey, out var itemsKey)
+            && itemsKey is string key
+            && !string.IsNullOrWhiteSpace(key))
         {
-            return ValueTask.FromResult(new IdempotencyKey(fromItems));
+            return ValueTask.FromResult(new IdempotencyKey(key));
         }
 
         if (httpContext.Request.Headers.TryGetValue(IdempotencyKeyFilter.HeaderName, out var headerValues) && headerValues.Count > 0)
         {
-            var rawHeaderValue = headerValues[0];
-            if (!string.IsNullOrWhiteSpace(rawHeaderValue))
-                return ValueTask.FromResult(new IdempotencyKey(rawHeaderValue.Trim()));
+            var headerKey = headerValues.FirstOrDefault(string.Empty)?.Trim();
+            if (!string.IsNullOrWhiteSpace(headerKey))
+                return ValueTask.FromResult(new IdempotencyKey(headerKey));
         }
 
         return ValueTask.FromResult(new IdempotencyKey(string.Empty));
