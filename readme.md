@@ -65,18 +65,48 @@ dotnet ef database update --project src/App --startup-project src/App
 ## Smoke Tests 
 
 ### POST /events
+* /events requires the Idempotency-Key header.
+* Missing or blank values return 400 with application/problem+json.
 
+Correct Header ⇒ 200 Accepted
 ```bash
 curl --location 'http://localhost:5245/events' \
 --header 'Content-Type: application/json' \
 --header 'Idempotency-Key: ik-327' \
 --data '{
-    "type": "item_collected",
-    "occurredAt": "2025-09-15T12:34:56Z",
-    "playerId": "p-001",
-    "sessionId": "s-abc",
-    "payload": { "foo": "bar" }
-  }'
+  "type": "dragon_slain",
+  "occurredAt": "2025-09-15T12:34:56Z",
+  "playerId": "p-001",
+  "sessionId": "s-abc",
+  "payload": { "foo": "bar" }
+}'
+```
+
+Missing Indempotency Header ⇒ 400 ProblemDetails
+```bash
+curl --location 'http://localhost:5245/events' \
+--header 'Content-Type: application/json' \
+--data '{
+  "type": "dragon_slain",
+  "occurredAt": "2025-09-15T12:34:56Z",
+  "playerId": "p-001",
+  "sessionId": "s-abc",
+  "payload": { "foo": "bar" }
+}'
+```
+  
+Empty Indempotency Header ⇒ 400 ProblemDetails
+```bash
+curl --location 'http://localhost:5245/events' \
+--header 'Content-Type: application/json' \
+--header 'Idempotency-Key;' \
+--data '{
+  "type": "dragon_slain",
+  "occurredAt": "2025-09-15T12:34:56Z",
+  "playerId": "p-001",
+  "sessionId": "s-abc",
+  "payload": { "foo": "bar" }
+}'
 ```
 
 ---
@@ -91,6 +121,7 @@ Audit trail of artifacts and decisions. Add links as work progresses.
 | 2025-09-18 | M0‑2            | **[ Containerize the App ](https://github.com/mikosz08/fantastic-portfolio/pull/21)** |
 | 2025-09-19 | M0‑3            | **[ Events Model, EF Core, Postgres ](https://github.com/mikosz08/fantastic-portfolio/pull/24)** |
 | 2025-09-19 | M0‑4-1            | **[ POST /events - DTOs & validation ](https://github.com/mikosz08/fantastic-portfolio/pull/30)** |
+| 2025-10-02 | M0‑4-2            | **** |
 | ---------- | -------------------------------- | --------------------------------------------------------------------------- |
 
 ---
@@ -103,7 +134,7 @@ Audit trail of artifacts and decisions. Add links as work progresses.
 | 2025-09-19 | Web API     | ASP.NET Core Minimal API                                                                                        |
 | 2025-09-19 | Data Access | EF Core + Npgsql                                                                                                |
 | 2025-09-19 | Database    | ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?logo=postgresql&logoColor=white)               |
-| 2025-09-19 | Container   | ![Docker](https://img.shields.io/badge/Docker-Buildx-2496ED?logo=docker&logoColor=white) • docker compose      |
+| 2025-09-19 | Container   | ![Docker](https://img.shields.io/badge/Docker-Buildx-2496ED?logo=docker&logoColor=white)       |
 | 2025-09-19 | CI/CD       | ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-CI-2088FF?logo=githubactions&logoColor=white) |
 | 2025-09-19 | Security    | ![CodeQL](https://img.shields.io/badge/CodeQL-SEC-181717?logo=github) • Dependabot                            |
 | 2025-09-19 | Docs        | Swagger / OpenAPI                                                                                               |
