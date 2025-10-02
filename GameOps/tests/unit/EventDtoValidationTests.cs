@@ -2,6 +2,8 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using App.Endpoints;
+using App.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameOps.Tests.Unit;
@@ -17,19 +19,19 @@ public class EventDtoValidationTests : IClassFixture<TestingWebAppFactory>
         var body = new { type = "new_level_reached", occurredAt = DateTimeOffset.Parse("2025-09-15T12:34:56Z") };
         var req = PostJson("/events", body);
 
-        var res = await _client.SendAsync(req); // no Idempotency-Key header
+        var res = await _client.SendAsync(req); 
         Assert.Equal(HttpStatusCode.BadRequest, res.StatusCode);
-
+  
         var problem = await res.Content.ReadFromJsonAsync<ProblemDetails>();
         Assert.NotNull(problem);
         Assert.Equal(400, problem!.Status);
-        Assert.Equal("Missing Idempotency-Key header", problem.Title);
+        Assert.Equal($"[{nameof(IdempotencyKeyFilter)}] Missing Idempotency-Key header", problem.Title);
     }
 
     [Fact]
     public async Task PostEvents_MissingType_Returns400WithErrors()
     {
-        var body = new { type = "   ", occurredAt = DateTimeOffset.Parse("2025-09-15T12:34:56Z") }; // empty type
+        var body = new { type = "   ", occurredAt = DateTimeOffset.Parse("2025-09-15T12:34:56Z") }; 
         var req = PostJson("/events", body);
         req.Headers.Add("Idempotency-Key", "test-123");
 
@@ -39,7 +41,7 @@ public class EventDtoValidationTests : IClassFixture<TestingWebAppFactory>
         var problem = await res.Content.ReadFromJsonAsync<ValidationProblemDetails>();
         Assert.NotNull(problem);
         Assert.Equal(400, problem!.Status);
-        Assert.Equal("Validation failed", problem.Title);
+        Assert.Equal($"[{nameof(EventsEndpoints)}] Validation failed", problem.Title);
 
         Assert.True(problem.Errors.ContainsKey("Type"));
         Assert.Contains("Type is required.", problem.Errors["Type"]);
@@ -48,7 +50,7 @@ public class EventDtoValidationTests : IClassFixture<TestingWebAppFactory>
     [Fact]
     public async Task PostEvents_DefaultOccurredAt_Returns400WithErrors()
     {
-        var body = new { type = "item_collected", occurredAt = default(DateTimeOffset) }; // default occurredAt
+        var body = new { type = "item_collected", occurredAt = default(DateTimeOffset) }; 
         var req = PostJson("/events", body);
         req.Headers.Add("Idempotency-Key", "test-123");
 
@@ -58,7 +60,7 @@ public class EventDtoValidationTests : IClassFixture<TestingWebAppFactory>
         var problem = await res.Content.ReadFromJsonAsync<ValidationProblemDetails>();
         Assert.NotNull(problem);
         Assert.Equal(400, problem!.Status);
-        Assert.Equal("Validation failed", problem.Title);
+        Assert.Equal($"[{nameof(EventsEndpoints)}] Validation failed", problem.Title);
 
         Assert.True(problem.Errors.ContainsKey("OccurredAt"));
         Assert.Contains("OccurredAt must be a valid timestamp.", problem.Errors["OccurredAt"]);
@@ -77,7 +79,7 @@ public class EventDtoValidationTests : IClassFixture<TestingWebAppFactory>
             };
 
         var req = PostJson("/events", body);
-        req.Headers.Add("Idempotency-Key", "k-123");
+        req.Headers.Add("Idempotency-Key", "test-123");
 
         var res = await _client.SendAsync(req);
         Assert.Equal(HttpStatusCode.Accepted, res.StatusCode);
@@ -86,7 +88,7 @@ public class EventDtoValidationTests : IClassFixture<TestingWebAppFactory>
         Assert.NotNull(json);
 
         // idempotencyKey
-        Assert.Equal("k-123", (string?)json!["idempotencyKey"]);
+        Assert.Equal("test-123", (string?)json!["idempotencyKey"]);
 
         // request echo
         var reqEcho = json["request"]!.AsObject();

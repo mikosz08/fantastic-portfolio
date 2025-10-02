@@ -8,14 +8,19 @@ public static class EventsEndpoints
 {
     public static IEndpointRouteBuilder MapEvents(this IEndpointRouteBuilder routes)
     {
+
         var group = routes.MapGroup("/events")
-                          .WithTags("Events").WithOpenApi();
+                          .WithTags("Events").WithOpenApi()
+                          .AddEndpointFilter(new IdempotencyKeyFilter());
 
-        group.MapPost("", (HttpRequest req, EventCreateDto dto) =>
+        group.MapPost("", (EventCreateDto dto, ILoggerFactory loggerFactory, IdempotencyKey idempotencyKey) =>
         {
-            if (!IdempotencyKey.TryGet(req, out var key))
-                return ProblemFactory.BadRequest("Missing Idempotency-Key header");
+            var logger = loggerFactory.CreateLogger("Api.Events");
 
+            logger.LogWarning(LogEvents.Info,
+            "Accepting event {Type} at {OccurredAt}",
+            dto.Type, dto.OccurredAt);
+            
             var errors = new Dictionary<string, string[]>();
             if (string.IsNullOrWhiteSpace(dto.Type))
                 errors[nameof(dto.Type)] = ["Type is required."];
@@ -23,16 +28,13 @@ public static class EventsEndpoints
                 errors[nameof(dto.OccurredAt)] = ["OccurredAt must be a valid timestamp."];
 
             if (errors.Count > 0)
-                return ProblemFactory.BadRequest("Validation failed", errors);
+                return ProblemFactory.BadRequest400(nameof(EventsEndpoints), "Validation failed", errors);
 
-            // TEMP for M0-4-1: echo request; real persistence in M0-4-2
-            return Results.Accepted(
-                uri: null,
-                value: new { request = dto, idempotencyKey = key }
-            );
+            return Results.Accepted(value: new { request = dto, idempotencyKey = idempotencyKey.Value });
         })
         .WithName("PostEvents")
-        .ProducesValidationProblem().Produces(StatusCodes.Status202Accepted);
+        .ProducesValidationProblem(400)
+        .Produces(StatusCodes.Status202Accepted);
 
         return routes;
     }

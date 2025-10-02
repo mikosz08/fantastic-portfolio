@@ -1,28 +1,28 @@
-using Microsoft.Extensions.Primitives;
+using System.Reflection;
 
 namespace App.Http;
 
-public static class IdempotencyKey
+public readonly record struct IdempotencyKey(string Value)
 {
-    public const string HeaderName = "Idempotency-Key";
-
-    public static bool TryGet(HttpRequest req, out string key)
+    public static ValueTask<IdempotencyKey> BindAsync(HttpContext httpContext, ParameterInfo parameterInfo)
     {
-        key = string.Empty;
-
-        if (!req.Headers.TryGetValue(HeaderName, out StringValues values))
-            return false;
-
-        for (int i = 0; i < values.Count; i++)
+        if (httpContext.Items.TryGetValue(IdempotencyKeyFilter.HttpItemsKey, out var itemsKey)
+            && itemsKey is string key
+            && !string.IsNullOrWhiteSpace(key))
         {
-            var v = values[i];                  
-            if (!string.IsNullOrWhiteSpace(v))  
-            {
-                key = v.Trim();                 
-                return true;
-            }
+            return ValueTask.FromResult(new IdempotencyKey(key));
         }
 
-        return false;
+        if (httpContext.Request.Headers.TryGetValue(IdempotencyKeyFilter.HeaderName, out var headerValues) && headerValues.Count > 0)
+        {
+            var headerKey = headerValues.FirstOrDefault(string.Empty)?.Trim();
+            if (!string.IsNullOrWhiteSpace(headerKey))
+                return ValueTask.FromResult(new IdempotencyKey(headerKey));
+        }
+
+        return ValueTask.FromResult(new IdempotencyKey(string.Empty));
     }
+
+    public override string ToString() => Value;
+    public static implicit operator string(IdempotencyKey key) => key.Value;
 }
