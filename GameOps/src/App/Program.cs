@@ -1,13 +1,13 @@
 using App.Data;
 using App.Endpoints;
+using App.Application.Events;
+using App.Infrastructure.Events;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString =
-    builder.Configuration["ConnectionStrings:Default"] ??
-    builder.Configuration["ConnectionStrings__Default"] ??
-    "Host=localhost;Username=app;Password=app;Database=gameops";
+//  "ConnectionStrings:Default" "Host=...;Username=...;Password=...;Database=..."
+var connectionString = builder.Configuration.GetConnectionString("Default");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -17,6 +17,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         npgsql.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(2), errorCodesToAdd: null);
     });
 });
+
+builder.Services.AddScoped<IEventsService, EventsService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -33,7 +35,6 @@ if (app.Environment.IsDevelopment() && !app.Environment.IsEnvironment("Testing")
 {
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
 
     try
     {
