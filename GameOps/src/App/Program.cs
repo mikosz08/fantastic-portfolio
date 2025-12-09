@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//  "ConnectionStrings:Default" "Host=...;Username=...;Password=...;Database=..."
 var connectionString =
     builder.Configuration["ConnectionStrings:Default"] ??
-    builder.Configuration["ConnectionStrings__Default"] ??
-    "Host=localhost;Username=app;Password=app;Database=gameops";
+    builder.Configuration["ConnectionStrings__Default"];
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {

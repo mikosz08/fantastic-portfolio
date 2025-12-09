@@ -4,27 +4,28 @@ services:
     image: postgres:16-alpine
     container_name: GameOpsDB
     environment:
-      POSTGRES_USER: app
-      POSTGRES_PASSWORD: app
-      POSTGRES_DB: gameops
+      POSTGRES_USER: ${DB_USER:-app}
+      POSTGRES_PASSWORD: ${DB_PASSWORD?must_set}
+      POSTGRES_DB: ${DB_NAME:-gameops}
     volumes:
       - dbdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U app -d gameops"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-app} -d ${DB_NAME:-gameops}"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 30s          
     restart: unless-stopped
-    ports:
-      - "5432:5432"       
+    ports: ["5432:5432"]     
   
   # Adminer
   pgweb:
     image: sosedoff/pgweb
     container_name: Adminer
     ports: ["8081:8081"]
-    command: ["--url", "postgres://app:app@db:5432/gameops?sslmode=disable"]
+    command:
+      - --url
+      - postgres://${DB_USER:-app}:${DB_PASSWORD?must_set}@db:5432/${DB_NAME:-gameops}?sslmode=disable
     depends_on:
       db:
         condition: service_healthy
@@ -36,12 +37,12 @@ services:
       context: ..
       dockerfile: ops/Dockerfile
     environment:
-      ConnectionStrings__Default: Host=db;Username=app;Password=app;Database=gameops
+      ConnectionStrings__Default: "Host=db;Port=5432;Database=${DB_NAME:-gameops};Username=${DB_USER:-app};Password=${DB_PASSWORD?must_set};"
       ASPNETCORE_ENVIRONMENT: Development
     depends_on:
       db:
         condition: service_healthy
-    ports:
-      - "8080:8080"
+    ports: ["8080:8080"]    
+    
 volumes:
   dbdata:
