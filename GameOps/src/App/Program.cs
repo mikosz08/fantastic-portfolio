@@ -5,9 +5,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 //  "ConnectionStrings:Default" "Host=...;Username=...;Password=...;Database=..."
-var connectionString =
-    builder.Configuration["ConnectionStrings:Default"] ??
-    builder.Configuration["ConnectionStrings__Default"];
+var connectionString = builder.Configuration.GetConnectionString("Default");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -33,7 +31,6 @@ if (app.Environment.IsDevelopment() && !app.Environment.IsEnvironment("Testing")
 {
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
 
     try
     {
