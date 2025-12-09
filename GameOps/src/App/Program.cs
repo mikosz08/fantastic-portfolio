@@ -1,5 +1,7 @@
 using App.Data;
 using App.Endpoints;
+using App.Application.Events;
+using App.Infrastructure.Events;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +17,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         npgsql.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(2), errorCodesToAdd: null);
     });
 });
+
+builder.Services.AddScoped<IEventsService, EventsService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

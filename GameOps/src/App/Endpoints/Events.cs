@@ -1,3 +1,4 @@
+using App.Application.Events;
 using App.Contracts;
 using App.Http;
 
@@ -13,7 +14,7 @@ public static class EventsEndpoints
                           .WithTags("Events").WithOpenApi()
                           .AddEndpointFilter(new IdempotencyKeyFilter());
 
-        group.MapPost("", (EventCreateDto dto, ILoggerFactory loggerFactory, IdempotencyKey idempotencyKey) =>
+        group.MapPost("", async (EventCreateDto dto, ILoggerFactory loggerFactory, IdempotencyKey idempotencyKey, IEventsService eventsService, CancellationToken ct) =>
         {
             var logger = loggerFactory.CreateLogger("Api.Events");
 
@@ -30,7 +31,9 @@ public static class EventsEndpoints
             if (errors.Count > 0)
                 return ProblemFactory.BadRequest400(nameof(EventsEndpoints), "Validation failed", errors);
 
-            return Results.Accepted(value: new { request = dto, idempotencyKey = idempotencyKey.Value });
+            var result = await eventsService.CreateAsync(dto, idempotencyKey, ct);
+
+            return result.IsReplay ? Results.Ok(result.Event) : Results.Accepted(value: result.Event);
         })
         .WithName("PostEvents")
         .ProducesValidationProblem(400)
