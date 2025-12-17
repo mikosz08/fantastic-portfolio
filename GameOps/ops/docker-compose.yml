@@ -37,6 +37,7 @@ services:
       dockerfile: ops/Dockerfile
     environment:
       ConnectionStrings__Default: Host=db;Username=app;Password=app;Database=gameops
+      ASPNETCORE_ENVIRONMENT: Development
     depends_on:
       db:
         condition: service_healthy
